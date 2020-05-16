@@ -1,5 +1,5 @@
 <#include "sequrity.ftl">
-
+<#import "login.ftl" as l>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="/">Sweater</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,7 +19,13 @@
                 <a class="nav-link" href="/user">User List</a>
             </li>
             </#if>
+            <#if user??>
+            <li class="nav-item">
+                <a class="nav-link" href="/user/profile">Profile</a>
+            </li>
+            </#if>
         </ul>
-        <div class="navbar-text">${name}</div>
+        <div class="navbar-text mr-3">${name}</div>
+        <@l.logout />
     </div>
 </nav>
