@@ -2,19 +2,18 @@ package com.example.sweater.controller;
 
 import com.example.sweater.domain.Role;
 import com.example.sweater.domain.User;
-import com.example.sweater.repos.UserRepo;
 import com.example.sweater.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
+
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 
 
 @Controller
@@ -63,5 +62,36 @@ public class UserController {
     ){
         userService.updateProfile(user,password,email);
         return "redirect:/user/profile";
+    }
+    @GetMapping("subscribe/{user}")
+    public String subscribe(
+            @PathVariable User user,
+            @AuthenticationPrincipal User currentUser
+    ){
+        userService.subscribe(currentUser,user);
+        return "redirect:/user-messages/" + user.getId();
+    }
+    @GetMapping("unsubscribe/{user}")
+    public String unsubscribe(
+            @PathVariable User user,
+            @AuthenticationPrincipal User currentUser
+    ){
+        userService.unsubscribe(currentUser,user);
+        return "redirect:/user-messages/" + user.getId();
+    }
+    @GetMapping("{type}/{user}/list")
+    public String userList(
+            Model model,
+            @PathVariable User user,
+            @PathVariable String type
+            ){
+        model.addAttribute("userChannel",user);
+        model.addAttribute("type",type);
+        if ("subscriptions".equals(type)){
+            model.addAttribute("users",user.getSubscriptions());
+        }else {
+            model.addAttribute("users",user.getSubscribers());
+        }
+        return "subscriptions";
     }
 }
